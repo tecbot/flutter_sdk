@@ -24,17 +24,18 @@ import java.util.Map;
 /** TestlibPlugin */
 public class TestlibPlugin implements MethodCallHandler {
     private static String TAG = "ADJUST-TESTLIB-PLUGIN-BRIDGE";
-    private static MethodChannel channel;
-    private static TestLibrary testLibrary = null;
+
+    private final MethodChannel channel;
+    private TestLibrary testLibrary = null;
 
     /** Plugin registration. */
     public static void registerWith(Registrar registrar) {
-        if (channel != null) {
-          throw new IllegalStateException("You should not call registerWith more than once.");
-        }
+        final MethodChannel channel = new MethodChannel(registrar.messenger(), "testlib");
+        channel.setMethodCallHandler(new TestlibPlugin(channel));
+    }
 
-        channel = new MethodChannel(registrar.messenger(), "testlib");
-        channel.setMethodCallHandler(new TestlibPlugin());
+    private TestlibPlugin(MethodChannel channel) {
+        this.channel = channel;
     }
 
     @Override

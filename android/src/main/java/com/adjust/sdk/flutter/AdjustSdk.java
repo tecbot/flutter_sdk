@@ -47,21 +47,20 @@ import static com.adjust.sdk.flutter.AdjustUtils.*;
 
 public class AdjustSdk implements MethodCallHandler {
     private static String TAG = "AdjustBridge";
-    private static MethodChannel channel;
-    private static Context applicationContext;
-    private static boolean launchDeferredDeeplink = true;
+
+    private final MethodChannel channel;
+    private final Context applicationContext;
+    private boolean launchDeferredDeeplink = true;
 
     // Plugin registration.
     public static void registerWith(Registrar registrar) {
-        if (channel != null) {
-            Log.e(TAG, "You should not call registerWith more than once!");
-            return;
-        }
+        final MethodChannel channel = new MethodChannel(registrar.messenger(), "com.adjust.sdk/api");
+        channel.setMethodCallHandler(new AdjustSdk(channel, registrar.context()));
+    }
 
-        AdjustSdk adjustSdk = new AdjustSdk();
-        applicationContext = registrar.context();
-        channel = new MethodChannel(registrar.messenger(), "com.adjust.sdk/api");
-        channel.setMethodCallHandler(adjustSdk);
+    private AdjustSdk(MethodChannel channel, Context applicationContext) {
+        this.channel = channel;
+        this.applicationContext = applicationContext;
     }
 
     @Override
