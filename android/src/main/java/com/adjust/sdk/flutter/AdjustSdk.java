@@ -518,7 +518,7 @@ public class AdjustSdk implements MethodCallHandler {
     }
 
     // Exposed for handling deep linking from native layer of the example app.
-    public static void appWillOpenUrl(Uri deeplink) {
+    public static void appWillOpenUrl(Uri deeplink, Context applicationContext) {
         Adjust.appWillOpenUrl(deeplink, applicationContext);
     }
 
